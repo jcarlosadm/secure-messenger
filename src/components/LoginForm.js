@@ -31,6 +31,10 @@ class LoginForm extends React.Component {
     );
   }
 
+  gotoRegister() {
+    // TODO: call Action register
+  }
+
   render() {
     return (
       <Card>
@@ -60,6 +64,16 @@ class LoginForm extends React.Component {
         <CardSection>
           {this.renderButton()}
         </CardSection>
+
+        <Text style={styles.orStyle}>
+          Or
+        </Text>
+
+        <CardSection>
+          <Button onPress={this.gotoRegister.bind(this)}>
+            Register
+          </Button>
+        </CardSection>
       </Card>
     );
   }
@@ -70,6 +84,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     alignSelf: 'center',
     color: 'red'
+  },
+
+  orStyle: {
+    fontSize: 20,
+    alignSelf: 'center',
+    paddingTop: 15,
+    paddingBottom: 15
   }
 });
 
