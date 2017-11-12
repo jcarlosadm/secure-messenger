@@ -5,18 +5,22 @@ import { emailChanged, passwordChanged, loginUser } from '../actions';
 import { Card, CardSection, Input, Button, Spinner } from './common';
 
 class LoginForm extends React.Component {
-  emailChange(text) {
-    this.props.emailChanged(text);
+  onButtonPress() {
+    const { email, password } = this.props;
+
+    this.props.loginUser({ email, password });
   }
 
   passwordChange(text) {
     this.props.passwordChanged(text);
   }
 
-  onButtonPress() {
-    const { email, password } = this.props;
+  emailChange(text) {
+    this.props.emailChanged(text);
+  }
 
-    this.props.loginUser({ email, password });
+  gotoRegister() {
+    // TODO: call Action register
   }
 
   renderButton() {
@@ -29,10 +33,6 @@ class LoginForm extends React.Component {
           Login
         </Button>
     );
-  }
-
-  gotoRegister() {
-    // TODO: call Action register
   }
 
   render() {

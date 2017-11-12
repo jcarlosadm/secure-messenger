@@ -4,12 +4,12 @@ import { createStore, applyMiddleware } from 'redux';
 import firebase from 'firebase';
 import ReduxThunk from 'redux-thunk';
 import reducers from './reducers';
-import firebase_setup from '../firebase_setup.json';
+import firebaseSetup from '../firebase_setup.json';
 import Router from './Router';
 
 export default class Main extends Component {
   componentWillMount() {
-    firebase.initializeApp(firebase_setup);
+    firebase.initializeApp(firebaseSetup);
   }
 
   render() {
