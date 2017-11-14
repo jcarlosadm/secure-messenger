@@ -1,27 +1,31 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Text, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
-import { emailChanged, passwordChanged, loginUser } from '../actions';
+import { nameChanged, emailChanged, passwordChanged, registerUser } from '../actions';
 import { Card, CardSection, Input, Button, Spinner } from './common';
 
-class LoginForm extends React.Component {
+class RegisterForm extends Component {
   onButtonPress() {
-    const { email, password } = this.props;
+    const { name, email, password } = this.props;
 
-    this.props.loginUser({ email, password });
+    this.props.registerUser({ name, email, password });
   }
 
-  passwordChange(text) {
-    this.props.passwordChanged(text);
+  nameChange(text) {
+    this.props.nameChanged(text);
   }
 
   emailChange(text) {
     this.props.emailChanged(text);
   }
 
-  gotoRegister() {
-    Actions.register();
+  passwordChange(text) {
+    this.props.passwordChanged(text);
+  }
+
+  gotoLogin() {
+    Actions.login();
   }
 
   renderButton() {
@@ -30,15 +34,24 @@ class LoginForm extends React.Component {
     }
 
     return (
-        <Button onPress={this.onButtonPress.bind(this)}>
-          Login
-        </Button>
+      <Button onPress={this.onButtonPress.bind(this)}>
+        Register
+      </Button>
     );
   }
 
   render() {
     return (
       <Card>
+        <CardSection>
+          <Input
+            label='Name'
+            placeholder='name'
+            onChangeText={this.nameChange.bind(this)}
+            value={this.props.name}
+          />
+        </CardSection>
+
         <CardSection>
           <Input
             label='Email'
@@ -71,8 +84,8 @@ class LoginForm extends React.Component {
         </Text>
 
         <CardSection>
-          <Button onPress={this.gotoRegister.bind(this)}>
-            Register
+          <Button onPress={this.gotoLogin.bind(this)}>
+            Login
           </Button>
         </CardSection>
       </Card>
@@ -96,9 +109,14 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => {
-  const { email, password, error, loading } = state.auth;
+  const { name, email, password, error, loading } = state.auth;
 
-  return { email, password, error, loading };
+  return { name, email, password, error, loading };
 };
 
-export default connect(mapStateToProps, { emailChanged, passwordChanged, loginUser })(LoginForm);
+export default connect(mapStateToProps, {
+  nameChanged,
+  emailChanged,
+  passwordChanged,
+  registerUser
+})(RegisterForm);
