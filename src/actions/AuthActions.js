@@ -1,11 +1,13 @@
 import firebase from 'firebase';
+import { Actions } from 'react-native-router-flux';
 import {
   NAME_CHANGED,
   EMAIL_CHANGED,
   PASSWORD_CHANGED,
   LOGIN_USER,
   LOGIN_USER_SUCCESS,
-  LOGIN_USER_FAIL
+  LOGIN_USER_FAIL,
+  RESET_ATTR
 } from './types';
 
 export const nameChanged = (text) => {
@@ -57,6 +59,10 @@ export const registerUser = ({ name, email, password }) => {
   };
 };
 
+export const resetAttr = () => {
+  return { type: RESET_ATTR };
+};
+
 const loginUserFail = (dispatch) => {
   dispatch({ type: LOGIN_USER_FAIL });
 };
@@ -67,7 +73,7 @@ const loginUserSuccess = (dispatch, user) => {
     payload: user
   });
 
-  // TODO: call Action Main window
+  Actions.messenger({ type: 'reset' });
 };
 
 const registerUserSuccess = (dispatch, user, name, email, password) => {

@@ -2,10 +2,20 @@ import React, { Component } from 'react';
 import { Text, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
-import { nameChanged, emailChanged, passwordChanged, registerUser } from '../actions';
+import {
+  nameChanged,
+  emailChanged,
+  passwordChanged,
+  registerUser,
+  resetAttr
+} from '../actions';
 import { Card, CardSection, Input, Button, Spinner } from './common';
 
 class RegisterForm extends Component {
+  componentWillMount() {
+    this.props.resetAttr();
+  }
+
   onButtonPress() {
     const { name, email, password } = this.props;
 
@@ -28,16 +38,12 @@ class RegisterForm extends Component {
     Actions.login();
   }
 
-  renderButton() {
+  renderButton(text, action, showSpinner) {
     if (this.props.loading) {
-      return <Spinner size='large' />;
+      return (showSpinner ? <Spinner size='large' /> : <Button>{text}</Button>);
     }
 
-    return (
-      <Button onPress={this.onButtonPress.bind(this)}>
-        Register
-      </Button>
-    );
+    return <Button onPress={action.bind(this)}>{text}</Button>;
   }
 
   render() {
@@ -76,7 +82,7 @@ class RegisterForm extends Component {
         </Text>
 
         <CardSection>
-          {this.renderButton()}
+          {this.renderButton('Register', this.onButtonPress, true)}
         </CardSection>
 
         <Text style={styles.orStyle}>
@@ -84,9 +90,7 @@ class RegisterForm extends Component {
         </Text>
 
         <CardSection>
-          <Button onPress={this.gotoLogin.bind(this)}>
-            Login
-          </Button>
+          {this.renderButton('Login', this.gotoLogin, false)}
         </CardSection>
       </Card>
     );
@@ -118,5 +122,6 @@ export default connect(mapStateToProps, {
   nameChanged,
   emailChanged,
   passwordChanged,
-  registerUser
+  registerUser,
+  resetAttr
 })(RegisterForm);
