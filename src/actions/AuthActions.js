@@ -7,8 +7,7 @@ import {
   LOGIN_USER,
   LOGIN_USER_SUCCESS,
   LOGIN_USER_FAIL,
-  RESET_ATTR,
-  USER_ALREADY_LOGGEDIN
+  RESET_ATTR
 } from './types';
 
 export const nameChanged = (text) => {
@@ -38,10 +37,6 @@ export const loginUser = ({ email, password }) => {
 
     firebase.auth().signInWithEmailAndPassword(email, password)
       .then(user => {
-        dispatch({
-          type: NAME_CHANGED,
-          payload: user.displayName
-        });
         loginUserSuccess(dispatch, user);
       })
       .catch(() => loginUserFail(dispatch));
@@ -66,12 +61,7 @@ export const verifyIfUserLogged = () => {
   return (dispatch) => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        // TODO: update user ip
-        dispatch({
-          type: USER_ALREADY_LOGGEDIN,
-          payload: user
-        });
-        Actions.messenger({ type: 'reset' });
+        loginUserSuccess(dispatch, user);
       } else {
         Actions.login({ type: 'reset' });
       }
@@ -93,15 +83,11 @@ const loginUserSuccess = (dispatch, user) => {
   Actions.messenger({ type: 'reset' });
 };
 
-const registerUserSuccess = (dispatch, user, name, email, password) => {
+const registerUserSuccess = (dispatch, user, name, password) => {
   user.updateProfile({ displayName: name })
     .then(() => {
-      firebase.auth().signInWithEmailAndPassword(email, password)
+      firebase.auth().signInWithEmailAndPassword(user.email, password)
         .then(userLogin => {
-          dispatch({
-            type: NAME_CHANGED,
-            payload: userLogin.displayName
-          });
           loginUserSuccess(dispatch, userLogin);
         })
         .catch(() => loginUserFail(dispatch));
