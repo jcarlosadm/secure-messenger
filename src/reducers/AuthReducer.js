@@ -5,7 +5,8 @@ import {
   LOGIN_USER,
   LOGIN_USER_SUCCESS,
   LOGIN_USER_FAIL,
-  RESET_ATTR
+  RESET_ATTR,
+  USER_ALREADY_LOGGEDIN
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -44,6 +45,14 @@ export default (state = INITIAL_STATE, action) => {
       };
     case RESET_ATTR:
       return { ...state, ...INITIAL_STATE };
+    case USER_ALREADY_LOGGEDIN:
+      return {
+        ...state,
+        ...INITIAL_STATE,
+        name: action.payload.displayName,
+        email: action.payload.email,
+        user: action.payload
+      };
     default:
       return state;
   }

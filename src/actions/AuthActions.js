@@ -7,7 +7,8 @@ import {
   LOGIN_USER,
   LOGIN_USER_SUCCESS,
   LOGIN_USER_FAIL,
-  RESET_ATTR
+  RESET_ATTR,
+  USER_ALREADY_LOGGEDIN
 } from './types';
 
 export const nameChanged = (text) => {
@@ -37,12 +38,10 @@ export const loginUser = ({ email, password }) => {
 
     firebase.auth().signInWithEmailAndPassword(email, password)
       .then(user => {
-        firebase.database().ref(`/users/${user.uid}/basic_info`)
-          .once('value')
-          .then(snapshot => dispatch({
-            type: NAME_CHANGED,
-            payload: snapshot.val().username
-          }));
+        dispatch({
+          type: NAME_CHANGED,
+          payload: user.displayName
+        });
         loginUserSuccess(dispatch, user);
       })
       .catch(() => loginUserFail(dispatch));
@@ -63,6 +62,22 @@ export const resetAttr = () => {
   return { type: RESET_ATTR };
 };
 
+export const verifyIfUserLogged = () => {
+  return (dispatch) => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        dispatch({
+          type: USER_ALREADY_LOGGEDIN,
+          payload: user
+        });
+        Actions.messenger({ type: 'reset' });
+      } else {
+        Actions.login({ type: 'reset' });
+      }
+    });
+  };
+};
+
 const loginUserFail = (dispatch) => {
   dispatch({ type: LOGIN_USER_FAIL });
 };
@@ -77,16 +92,16 @@ const loginUserSuccess = (dispatch, user) => {
 };
 
 const registerUserSuccess = (dispatch, user, name, email, password) => {
-  firebase.auth().signInWithEmailAndPassword(email, password)
-    .then(userLogin => {
-      const { currentUser } = firebase.auth();
-      firebase.database().ref(`/users/${currentUser.uid}/basic_info`)
-        .set({ username: name })
-        .then(dispatch({
-          type: NAME_CHANGED,
-          payload: name
-        }));
-      loginUserSuccess(dispatch, userLogin);
-    })
-    .catch(() => loginUserFail(dispatch));
+  user.updateProfile({ displayName: name })
+    .then(() => {
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(userLogin => {
+          dispatch({
+            type: NAME_CHANGED,
+            payload: userLogin.displayName
+          });
+          loginUserSuccess(dispatch, userLogin);
+        })
+        .catch(() => loginUserFail(dispatch));
+    });
 };
