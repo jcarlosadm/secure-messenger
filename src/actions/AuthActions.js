@@ -66,6 +66,7 @@ export const verifyIfUserLogged = () => {
   return (dispatch) => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
+        // TODO: update user ip
         dispatch({
           type: USER_ALREADY_LOGGEDIN,
           payload: user
@@ -83,6 +84,7 @@ const loginUserFail = (dispatch) => {
 };
 
 const loginUserSuccess = (dispatch, user) => {
+  // TODO: update user ip
   dispatch({
     type: LOGIN_USER_SUCCESS,
     payload: user
