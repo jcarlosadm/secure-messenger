@@ -41,15 +41,25 @@ const checkNullUid = (db, uidCheck, callback) => {
 * db: local database
 * uid_: user id
 * friendId: id of user to search
-* callback: callback function with one boolean parameter
+* callback: callback function with one parameter
 */
 const friendExists = (db, uid_, friendId, callback) => {
   db.find({ uid: uid_, friends: { $elemMatch: { id: friendId } } },
-  (err, doc) => {
+    (err, doc) => {
     if (doc == null || doc === undefined || doc.length === 0) {
-      callback(false);
+      callback(null);
     } else {
-      callback(true);
+      const friendList = doc[0].friends;
+      let friendInfo = null;
+
+      for (let i = 0; i < friendList.length; ++i) {
+        if (friendList[i].id === friendId) {
+          friendInfo = friendList[i];
+          break;
+        }
+      }
+
+      callback(friendInfo);
     }
   });
 };
@@ -144,8 +154,8 @@ class LocalDatabase {
   */
   addFriend(uid_, friendId, callback) {
     checkNullUid(this.db, uid_, () => {
-      friendExists(this.db, uid_, friendId, (exists) => {
-        if (exists === false) {
+      friendExists(this.db, uid_, friendId, (friendInfo) => {
+        if (friendInfo == null) {
           // TODO: fetch information from firebase
           const friendObj = { id: friendId };
           // TODO: end
@@ -157,6 +167,18 @@ class LocalDatabase {
           callback();
         }
       });
+    });
+  }
+
+  /*
+  * get friend information
+  * uid_: user id
+  * friendId: friend id
+  * callback: callback function with one parameter
+  */
+  getFriendInfo(uid_, friendId, callback) {
+    friendExists(this.db, uid_, friendId, (friendInfo) => {
+      callback(friendInfo);
     });
   }
 

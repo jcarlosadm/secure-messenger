@@ -47,11 +47,27 @@ const clearTest = () => {
   });
 };
 
+const getFriendInfoTest = () => {
+  const localDb = new LocalDatabase(true);
+
+  localDb.addFriend('qqqqqqqqqqqqqqqqqqq', '0000000000000000000', () => {
+    localDb.addFriend('qqqqqqqqqqqqqqqqqqq', '1111111111111111111', () => {
+      localDb.getFriendInfo('qqqqqqqqqqqqqqqqqqq', '1111111111111111111',
+      (friendInfo) => {
+        if (friendInfo.id !== '1111111111111111111') {
+          throw new Error('error to get friend information');
+        }
+      });
+    });
+  });
+};
+
 class LocalDatabaseTest {
   run() {
     updateFriendListTest();
     addFriendTest();
     clearTest();
+    getFriendInfoTest();
   }
 }
 
