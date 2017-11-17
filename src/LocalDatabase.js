@@ -1,17 +1,16 @@
 import DataStore from 'react-native-local-mongodb';
 
-const dbName = { filename: 'AppStorage' };
-const tempStorage = true;
+const dbConfig = { filename: 'AppStorage' };
 
 /* PRIVATE FUNCTIONS */
 
-const arraysEqual = (arr1, arr2) => {
-    if (arr1.length !== arr2.length) {
+const arraysEqual = (currentList, ids) => {
+    if (currentList.length !== ids.length) {
       return false;
     }
 
-    for (let i = arr1.length; i--;) {
-      if (arr1[i] !== arr2[i]) {
+    for (let i = 0; i < currentList.length; ++i) {
+      if (currentList[i].id !== ids[i]) {
         return false;
       }
     }
@@ -37,19 +36,47 @@ const checkNullUid = (db, uidCheck, callback) => {
   });
 };
 
+/*
+* check if friend id exists in database
+* db: local database
+* uid_: user id
+* friendId: id of user to search
+* callback: callback function with one boolean parameter
+*/
+const friendExists = (db, uid_, friendId, callback) => {
+  db.find({ uid: uid_, friends: { $elemMatch: { id: friendId } } },
+  (err, doc) => {
+    if (doc == null || doc === undefined || doc.length === 0) {
+      callback(false);
+    } else {
+      callback(true);
+    }
+  });
+};
+
 /* END OF PRIVATE FUNCTIONS */
 
 /*
 * Manage local database
 */
 class LocalDatabase {
-  constructor() {
+  constructor(tempStorage) {
     if (tempStorage) {
       this.db = new DataStore();
     } else {
-      this.db = new DataStore(dbName);
+      this.db = new DataStore(dbConfig);
       this.db.loadDatabase();
     }
+  }
+
+  /*
+  * clear database
+  * callback: callback function without parameters
+  */
+  clear(callback) {
+    this.db.remove({}, () => {
+      callback();
+    });
   }
 
   /*
@@ -77,10 +104,17 @@ class LocalDatabase {
   */
   updateFriendList(uid_, newFriendList, callback) {
     this.getFriendList(uid_, (currentList) => {
-      if ((currentList && arraysEqual(currentList, newFriendList) === false)
-            || currentList == null || currentList === undefined) {
+      if ((currentList
+          && arraysEqual(currentList, newFriendList) === false)
+          || currentList == null || currentList === undefined) {
         checkNullUid(this.db, uid_, () => {
-          this.db.update({ uid: uid_ }, { $set: { friends: newFriendList } },
+          // TODO: fetch information from firebase, and replace newFriendList
+          const list = [];
+          for (let i = 0; i < newFriendList.length; ++i) {
+            list.push({ id: newFriendList[i] });
+          }
+          // TODO: end of modification
+          this.db.update({ uid: uid_ }, { $set: { friends: list } },
             {}, () => {
               callback();
             });
@@ -88,6 +122,41 @@ class LocalDatabase {
       } else {
         callback();
       }
+    });
+  }
+
+  /*
+  * check if user id exists. if not, add this
+  * uid_: user id
+  * callback: callback function without parameters
+  */
+  addUser(uid_, callback) {
+    checkNullUid(this.db, uid_, () => {
+      callback();
+    });
+  }
+
+  /*
+  * add friend to friend list of user
+  * uid_: user id
+  * friendId: friend id
+  * callback: callback function without parameters
+  */
+  addFriend(uid_, friendId, callback) {
+    checkNullUid(this.db, uid_, () => {
+      friendExists(this.db, uid_, friendId, (exists) => {
+        if (exists === false) {
+          // TODO: fetch information from firebase
+          const friendObj = { id: friendId };
+          // TODO: end
+          this.db.update({ uid: uid_ },
+            { $push: { friends: friendObj } }, {}, () => {
+              callback();
+            });
+        } else {
+          callback();
+        }
+      });
     });
   }
 
