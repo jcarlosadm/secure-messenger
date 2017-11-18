@@ -118,12 +118,11 @@ class LocalDatabase {
           && arraysEqual(currentList, newFriendList) === false)
           || currentList == null || currentList === undefined) {
         checkNullUid(this.db, uid_, () => {
-          // TODO: fetch information from firebase, and replace newFriendList
           const list = [];
           for (let i = 0; i < newFriendList.length; ++i) {
             list.push({ id: newFriendList[i] });
           }
-          // TODO: end of modification
+
           this.db.update({ uid: uid_ }, { $set: { friends: list } },
             {}, () => {
               callback();
@@ -156,9 +155,8 @@ class LocalDatabase {
     checkNullUid(this.db, uid_, () => {
       friendExists(this.db, uid_, friendId, (friendInfo) => {
         if (friendInfo == null) {
-          // TODO: fetch information from firebase
           const friendObj = { id: friendId };
-          // TODO: end
+
           this.db.update({ uid: uid_ },
             { $push: { friends: friendObj } }, {}, () => {
               callback();
@@ -179,6 +177,86 @@ class LocalDatabase {
   getFriendInfo(uid_, friendId, callback) {
     friendExists(this.db, uid_, friendId, (friendInfo) => {
       callback(friendInfo);
+    });
+  }
+
+  /*
+  * remove friend
+  * uid_: user id
+  * friendId: friend id
+  * callback: callback function without parameters
+  */
+  removeFriend(uid_, friendId, callback) {
+    friendExists(this.db, uid_, friendId, (friendInfo) => {
+      if (friendInfo) {
+        this.db.update({ uid: uid_ },
+        { $pull: { friends: { id: friendId } } }, {}, () => {
+          callback();
+        });
+      } else {
+        callback();
+      }
+    });
+  }
+
+  addFriendMessage(uid_, friendId, messageObj, callback) {
+    friendExists(this.db, uid_, friendId, (friendInfo) => {
+      if (friendInfo) {
+        const newFriendInfo = friendInfo;
+        if (newFriendInfo.messages === undefined || newFriendInfo.messages == null) {
+          newFriendInfo.messages = [];
+        }
+
+        newFriendInfo.messages.push(messageObj);
+
+        this.removeFriend(uid_, friendId, () => {
+          this.db.update({ uid: uid_ },
+            { $push: { friends: newFriendInfo } }, {}, () => {
+              callback(true);
+            });
+        });
+      } else {
+        callback(false);
+      }
+    });
+  }
+
+  updateFriendInfo(uid_, friendId, friendObj, callback) {
+    friendExists(this.db, uid_, friendId, (friendInfo) => {
+      if (friendInfo) {
+        this.removeFriend(uid_, friendId, () => {
+          this.db.update({ uid: uid_ },
+            { $push: { friends: friendObj } }, {}, () => {
+              callback(true);
+            });
+        });
+      } else {
+        callback(false);
+      }
+    });
+  }
+
+  updateUserInfo(uid_, userObj, callback) {
+    this.db.find({ uid: uid_ }, (err, doc) => {
+      if (doc && doc.length > 0) {
+        this.db.remove({ uid: uid_ }, () => {
+          this.db.insert(userObj, () => {
+            callback(true);
+          });
+        });
+      } else {
+        callback(false);
+      }
+    });
+  }
+
+  getUserInfo(uid_, callback) {
+    this.db.find({ uid: uid_ }, (err, doc) => {
+      if (doc && doc.length > 0) {
+        callback(doc[0]);
+      } else {
+        callback(null);
+      }
     });
   }
 
