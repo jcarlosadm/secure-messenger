@@ -17,8 +17,8 @@ export default class Main extends Component {
   }
 
   componentWillMount() {
-    runTests();
     firebase.initializeApp(firebaseSetup);
+    runTests();
   }
 
   render() {

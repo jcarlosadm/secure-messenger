@@ -2,14 +2,23 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { ListView } from 'react-native';
 import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
+import firebase from 'firebase';
 import { friendsFetch } from '../actions';
 import FriendListUnit from './FriendListUnit';
 
 class FriendsList extends Component {
+  logout(props) {
+    firebase.auth().signOut();
+    Actions.login({ type: 'reset' });
+  }
+  
   componentWillMount() {
     this.props.friendsFetch(this.props.user);
 
     this.createDataSource(this.props);
+    
+    Actions.refresh({ onRight: this.logout });
   }
 
   componentWillReceiveProps(nextProps) {

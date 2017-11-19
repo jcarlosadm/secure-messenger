@@ -6,13 +6,15 @@ import {
   emailChanged,
   passwordChanged,
   loginUser,
-  resetAttr
+  resetAttr,
+  friendsReset
 } from '../actions';
 import { Card, CardSection, Input, Button, Spinner } from './common';
 
 class LoginForm extends React.Component {
   componentWillMount() {
     this.props.resetAttr();
+    this.props.friendsReset();
   }
   
   onButtonPress() {
@@ -108,5 +110,6 @@ export default connect(mapStateToProps, {
   emailChanged,
   passwordChanged,
   loginUser,
-  resetAttr
+  resetAttr,
+  friendsReset
 })(LoginForm);

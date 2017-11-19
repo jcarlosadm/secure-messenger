@@ -7,13 +7,15 @@ import {
   emailChanged,
   passwordChanged,
   registerUser,
-  resetAttr
+  resetAttr,
+  friendsReset
 } from '../actions';
 import { Card, CardSection, Input, Button, Spinner } from './common';
 
 class RegisterForm extends Component {
   componentWillMount() {
     this.props.resetAttr();
+    this.props.friendsReset();
   }
 
   onButtonPress() {
@@ -123,5 +125,6 @@ export default connect(mapStateToProps, {
   emailChanged,
   passwordChanged,
   registerUser,
-  resetAttr
+  resetAttr,
+  friendsReset
 })(RegisterForm);

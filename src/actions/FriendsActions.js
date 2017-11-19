@@ -1,6 +1,7 @@
 import firebase from 'firebase';
 import {
-  FRIENDS_FETCH_SUCCESS
+  FRIENDS_FETCH_SUCCESS,
+  FRIENDS_RESET
 } from './types';
 
 export const friendsFetch = (currentUser) => {
@@ -13,4 +14,8 @@ export const friendsFetch = (currentUser) => {
         });
       });
   };
+};
+
+export const friendsReset = () => {
+  return { type: FRIENDS_RESET };
 };

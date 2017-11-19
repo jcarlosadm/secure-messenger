@@ -80,7 +80,7 @@ const loginUserSuccess = (dispatch, user) => {
     payload: user
   });
 
-  Actions.messenger({ type: 'reset' });
+  Actions.friends({ type: 'reset' });
 };
 
 const registerUserSuccess = (dispatch, user, name, password) => {

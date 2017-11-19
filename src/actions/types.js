@@ -7,3 +7,4 @@ export const LOGIN_USER_FAIL = 'login_user_fail';
 export const RESET_ATTR = 'reset_attr';
 
 export const FRIENDS_FETCH_SUCCESS = 'friends_fetch_success';
+export const FRIENDS_RESET = 'friends_reset';
