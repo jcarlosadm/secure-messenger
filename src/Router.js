@@ -1,13 +1,9 @@
 import React from 'react';
-import { Scene, Router, Actions } from 'react-native-router-flux';
+import { Scene, Router } from 'react-native-router-flux';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
 import FriendsList from './components/FriendsList';
 import InitialLogo from './components/InitialLogo';
-
-const goLogin = () => {
-  
-};
 
 const RouterComponent = () => {
   return (
@@ -29,8 +25,8 @@ const RouterComponent = () => {
           title='Register'
         />
         <Scene
-        	onRight={function(){}}
-        	rightTitle='Logout'
+          onRight={function () {}}
+          rightTitle='Logout'
           key='friends'
           component={FriendsList}
           title='Friends'

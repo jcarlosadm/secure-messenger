@@ -8,21 +8,21 @@ import { friendsFetch } from '../actions';
 import FriendListUnit from './FriendListUnit';
 
 class FriendsList extends Component {
-  logout(props) {
-    firebase.auth().signOut();
-    Actions.login({ type: 'reset' });
-  }
-  
   componentWillMount() {
     this.props.friendsFetch(this.props.user);
 
     this.createDataSource(this.props);
-    
+
     Actions.refresh({ onRight: this.logout });
   }
 
   componentWillReceiveProps(nextProps) {
     this.createDataSource(nextProps);
+  }
+
+  logout() {
+    firebase.auth().signOut();
+    Actions.login({ type: 'reset' });
   }
 
   createDataSource({ friends }) {

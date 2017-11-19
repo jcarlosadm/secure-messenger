@@ -75,6 +75,8 @@ const loginUserFail = (dispatch) => {
 
 const loginUserSuccess = (dispatch, user) => {
   // TODO: update user ip
+  // TODO: update your local friends database (fetch ips)
+
   dispatch({
     type: LOGIN_USER_SUCCESS,
     payload: user
@@ -86,6 +88,7 @@ const loginUserSuccess = (dispatch, user) => {
 const registerUserSuccess = (dispatch, user, name, password) => {
   user.updateProfile({ displayName: name })
     .then(() => {
+      // TODO: get port
       firebase.auth().signInWithEmailAndPassword(user.email, password)
         .then(userLogin => {
           loginUserSuccess(dispatch, userLogin);
