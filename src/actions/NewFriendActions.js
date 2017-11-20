@@ -23,6 +23,7 @@ export const addFriend = ({ user, friendEmail }) => {
   return (dispatch) => {
     dispatch({ type: FRIEND_LOADING });
     let data = null;
+
     firebase.database().ref('users')
     .orderByChild('basic_info/email')
     .equalTo(friendEmail)
@@ -42,10 +43,10 @@ export const addFriend = ({ user, friendEmail }) => {
         if (data.email === user.email) {
           dispatch({ type: ADD_FRIEND_FAIL });
         } else {
-          friendExists(user, data.id, (success) => {
+          friendNotExists(user, data.id, (success) => {
             if (success) {
               firebase.database().ref(`users/${user.uid}/friends`)
-              .push().set({ id: data.id })
+              .child(data.id).set({ session_key: '' })
               .then(() => {
                 dispatch({ type: ADD_FRIEND_SUCCESS });
                 Actions.friends({ type: 'reset' });
@@ -66,7 +67,7 @@ export const addFriend = ({ user, friendEmail }) => {
   };
 };
 
-const friendExists = (user, friendId, callback) => {
+const friendNotExists = (user, friendId, callback) => {
   let success = true;
   firebase.database().ref(`users/${user.uid}/friends`)
   .once('value', snapshot => {
@@ -76,7 +77,7 @@ const friendExists = (user, friendId, callback) => {
       const keys = Object.keys(data);
 
       for (let i = 0; i < keys.length; ++i) {
-        if (data[keys[i]].id === friendId) {
+        if (keys[i] === friendId) {
           success = false;
           break;
         }
