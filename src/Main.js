@@ -8,6 +8,11 @@ import firebaseSetup from '../firebase_setup.json';
 import Router from './Router';
 
 export default class Main extends Component {
+  constructor() {
+     super();
+     console.ignoredYellowBox = ['Setting a timer'];
+  }
+
   componentWillMount() {
     firebase.initializeApp(firebaseSetup);
   }

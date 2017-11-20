@@ -1,35 +1,48 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-import { Scene, Router } from 'react-native-router-flux';
+import { Scene, Router, Actions } from 'react-native-router-flux';
+import firebase from 'firebase';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
+import FriendsList from './components/FriendsList';
+import InitialLogo from './components/InitialLogo';
+import NewFriendForm from './components/NewFriendForm';
 
 const RouterComponent = () => {
   return (
     <Router sceneStyle={{ paddingTop: 65 }} >
-      <Scene key='auth'>
+        <Scene
+          key='initialLogo'
+          component={InitialLogo}
+          hideNavBar
+          initial
+        />
         <Scene
           key='login'
           component={LoginForm}
           title="Login"
-          titleStyle={styles.titleStyle}
-          initial
         />
         <Scene
           key='register'
           component={RegisterForm}
           title='Register'
-          titleStyle={styles.titleStyle}
         />
-      </Scene>
+        <Scene
+          onRight={() => {
+            firebase.auth().signOut();
+            Actions.login({ type: 'reset' });
+          }}
+          rightTitle='Logout'
+          key='friends'
+          component={FriendsList}
+          title='Friends'
+        />
+        <Scene
+          key='newFriendForm'
+          component={NewFriendForm}
+          title='New Friend'
+        />
     </Router>
   );
 };
-
-const styles = StyleSheet.create({
-  titleStyle: {
-    alignSelf: 'center'
-  }
-});
 
 export default RouterComponent;

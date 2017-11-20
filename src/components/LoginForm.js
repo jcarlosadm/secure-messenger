@@ -2,10 +2,21 @@ import React from 'react';
 import { Text, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
-import { emailChanged, passwordChanged, loginUser } from '../actions';
+import {
+  emailChanged,
+  passwordChanged,
+  loginUser,
+  resetAttr,
+  friendsReset
+} from '../actions';
 import { Card, CardSection, Input, Button, Spinner } from './common';
 
 class LoginForm extends React.Component {
+  componentWillMount() {
+    this.props.resetAttr();
+    this.props.friendsReset();
+  }
+  
   onButtonPress() {
     const { email, password } = this.props;
 
@@ -24,16 +35,12 @@ class LoginForm extends React.Component {
     Actions.register();
   }
 
-  renderButton() {
+  renderButton(text, action, showSpinner) {
     if (this.props.loading) {
-      return <Spinner size='large' />;
+      return (showSpinner ? <Spinner size='large' /> : <Button>{text}</Button>);
     }
 
-    return (
-        <Button onPress={this.onButtonPress.bind(this)}>
-          Login
-        </Button>
-    );
+    return <Button onPress={action.bind(this)}>{text}</Button>;
   }
 
   render() {
@@ -63,7 +70,7 @@ class LoginForm extends React.Component {
         </Text>
 
         <CardSection>
-          {this.renderButton()}
+          {this.renderButton('Login', this.onButtonPress, true)}
         </CardSection>
 
         <Text style={styles.orStyle}>
@@ -71,9 +78,7 @@ class LoginForm extends React.Component {
         </Text>
 
         <CardSection>
-          <Button onPress={this.gotoRegister.bind(this)}>
-            Register
-          </Button>
+          {this.renderButton('Register', this.gotoRegister, false)}
         </CardSection>
       </Card>
     );
@@ -101,4 +106,10 @@ const mapStateToProps = (state) => {
   return { email, password, error, loading };
 };
 
-export default connect(mapStateToProps, { emailChanged, passwordChanged, loginUser })(LoginForm);
+export default connect(mapStateToProps, {
+  emailChanged,
+  passwordChanged,
+  loginUser,
+  resetAttr,
+  friendsReset
+})(LoginForm);
