@@ -1,3 +1,4 @@
+import firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
 import {
   MESSAGE_TITLE_CHANGED
@@ -12,4 +13,11 @@ export const chooseFriend = ({ name }) => {
 
     Actions.messageWindow();
   };
+};
+
+export const fetchMessages = ({ uid, friendId }) => {
+  /*return (dispatch) => {
+    //firebase.database().ref(`users/${friendId}/messages`);
+  };*/
+  return {};
 };
