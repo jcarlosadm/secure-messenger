@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { ListView, View } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
-import firebase from 'firebase';
 import ActionButton from 'react-native-action-button';
 import { friendsFetch } from '../actions';
 import FriendListUnit from './FriendListUnit';
@@ -13,17 +12,10 @@ class FriendsList extends Component {
     this.props.friendsFetch(this.props.user);
 
     this.createDataSource(this.props);
-
-    Actions.refresh({ onRight: this.logout });
   }
 
   componentWillReceiveProps(nextProps) {
     this.createDataSource(nextProps);
-  }
-
-  logout() {
-    firebase.auth().signOut();
-    Actions.login({ type: 'reset' });
   }
 
   createDataSource({ friends }) {
@@ -48,7 +40,7 @@ class FriendsList extends Component {
         />
         <ActionButton
           buttonColor="rgba(231,76,60,1)"
-          onPress={() => console.log('pressed!')}
+          onPress={() => Actions.newFriendForm()}
         />
       </View>
     );
