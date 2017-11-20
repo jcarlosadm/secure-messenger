@@ -14,3 +14,5 @@ export const FRIEND_LOADING = 'friend_loading';
 export const FRIEND_RESET = 'friend_reset';
 export const ADD_FRIEND_SUCCESS = 'add_friend_success';
 export const ADD_FRIEND_FAIL = 'add_friend_fail';
+
+export const MESSAGE_TITLE_CHANGED = 'message_title_changed';

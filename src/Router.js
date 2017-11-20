@@ -6,6 +6,7 @@ import RegisterForm from './components/RegisterForm';
 import FriendsList from './components/FriendsList';
 import InitialLogo from './components/InitialLogo';
 import NewFriendForm from './components/NewFriendForm';
+import MessageWindow from './components/MessageWindow';
 
 const RouterComponent = () => {
   return (
@@ -40,6 +41,11 @@ const RouterComponent = () => {
           key='newFriendForm'
           component={NewFriendForm}
           title='New Friend'
+        />
+        <Scene
+          key='messageWindow'
+          component={MessageWindow}
+          title='Messages'
         />
     </Router>
   );
