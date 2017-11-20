@@ -31,9 +31,9 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         ...INITIAL_STATE,
-        name: action.payload.displayName,
+        name: action.payload.name,
         email: action.payload.email,
-        user: action.payload
+        user: action.payload.user
       };
     case LOGIN_USER_FAIL:
       return {

@@ -3,6 +3,7 @@ import { Actions } from 'react-native-router-flux';
 import {
   NAME_CHANGED,
   EMAIL_CHANGED,
+  PHOTOURL_CHANGED,
   PASSWORD_CHANGED,
   LOGIN_USER,
   LOGIN_USER_SUCCESS,
@@ -20,6 +21,13 @@ export const nameChanged = (text) => {
 export const emailChanged = (text) => {
   return {
     type: EMAIL_CHANGED,
+    payload: text
+  };
+};
+
+export const photoUrlChanged = (text) => {
+  return {
+    type: PHOTOURL_CHANGED,
     payload: text
   };
 };
@@ -74,25 +82,28 @@ const loginUserFail = (dispatch) => {
 };
 
 const loginUserSuccess = (dispatch, user) => {
-  // TODO: update user ip
-  // TODO: update your local friends database (fetch ips)
+  firebase.database().ref(`/users/${user.uid}/basic_info`).once('value')
+    .then((snapshot) => {
+      const name = (snapshot.val() && snapshot.val().name) || null;
+      const email = (snapshot.val() && snapshot.val().email) || null;
 
-  dispatch({
-    type: LOGIN_USER_SUCCESS,
-    payload: user
-  });
+      dispatch({
+        type: LOGIN_USER_SUCCESS,
+        payload: { user, name, email }
+      });
 
-  Actions.friends({ type: 'reset' });
+      Actions.friends({ type: 'reset' });
+    });
 };
 
 const registerUserSuccess = (dispatch, user, name, password) => {
-  user.updateProfile({ displayName: name })
-    .then(() => {
-      // TODO: get port
-      firebase.auth().signInWithEmailAndPassword(user.email, password)
-        .then(userLogin => {
-          loginUserSuccess(dispatch, userLogin);
-        })
-        .catch(() => loginUserFail(dispatch));
-    });
+  firebase.database().ref(`/users/${user.uid}/basic_info`).set({
+    name,
+    email: user.email
+  }).then(() => {
+    firebase.auth().signInWithEmailAndPassword(user.email, password)
+      .then(userLogin => {
+        loginUserSuccess(dispatch, userLogin);
+      }).catch(() => loginUserFail(dispatch));
+  });
 };
