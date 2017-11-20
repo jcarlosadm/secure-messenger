@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import { CardSection } from './common';
 import {
@@ -20,9 +20,17 @@ class FriendListUnit extends React.Component {
   }
 }
 
+const winWidth = Dimensions.get('window').width;
+
 const styles = StyleSheet.create({
   textStyle: {
-    fontSize: 25
+    fontSize: 25,
+    width: (winWidth - 10),
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 20,
+    borderRadius: 10,
+    backgroundColor: '#e6ecf7'
   }
 });
 
