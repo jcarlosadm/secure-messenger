@@ -3,7 +3,8 @@ import {
 } from '../actions/types';
 
 const INITIAL_STATE = {
-  title: ''
+  title: '',
+  listMessages: {}
 };
 
 export default (state = INITIAL_STATE, action) => {
