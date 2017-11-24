@@ -14,7 +14,9 @@ export default class Main extends Component {
   }
 
   componentWillMount() {
-    firebase.initializeApp(firebaseSetup);
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseSetup);
+    }
   }
 
   render() {

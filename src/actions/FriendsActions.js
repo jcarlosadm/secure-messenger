@@ -17,6 +17,7 @@ export const friendsFetch = (currentUser) => {
               const friendInfo = getFriendInfo(snapshot2.val(), keys[i]);
               data[keys[i]].email = friendInfo.email;
               data[keys[i]].name = friendInfo.name;
+              data[keys[i]].friendId = friendInfo.friendId;
             }
 
             dispatch({
@@ -41,5 +42,5 @@ export const friendsReset = () => {
 const getFriendInfo = (data, friendId) => {
   const email = data[friendId].basic_info.email;
   const name = data[friendId].basic_info.name;
-  return { email, name };
+  return { email, name, friendId };
 };
