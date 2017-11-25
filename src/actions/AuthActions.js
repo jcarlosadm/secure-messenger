@@ -1,5 +1,6 @@
 import firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
+import RSAManager from '../RSAManager';
 import {
   NAME_CHANGED,
   EMAIL_CHANGED,
@@ -84,12 +85,16 @@ const loginUserFail = (dispatch) => {
 const loginUserSuccess = (dispatch, user) => {
   firebase.database().ref(`/users/${user.uid}/basic_info`).once('value')
     .then((snapshot) => {
+      const rsa = new RSAManager();
+
       const name = (snapshot.val() && snapshot.val().name) || null;
       const email = (snapshot.val() && snapshot.val().email) || null;
+      const publicKey = rsa.jsonToPublicKey((snapshot.val()
+                                  && snapshot.val().publicKey) || null);
 
       dispatch({
         type: LOGIN_USER_SUCCESS,
-        payload: { user, name, email }
+        payload: { user, name, email, publicKey }
       });
 
       Actions.friends({ type: 'reset' });
@@ -97,13 +102,20 @@ const loginUserSuccess = (dispatch, user) => {
 };
 
 const registerUserSuccess = (dispatch, user, name, password) => {
-  firebase.database().ref(`/users/${user.uid}/basic_info`).set({
-    name,
-    email: user.email
-  }).then(() => {
-    firebase.auth().signInWithEmailAndPassword(user.email, password)
-      .then(userLogin => {
-        loginUserSuccess(dispatch, userLogin);
-      }).catch(() => loginUserFail(dispatch));
+  const rsa = new RSAManager();
+  rsa.genKeys((keyPair) => {
+    const publicKey = rsa.publicKeyToJson(keyPair.publicKey);
+    rsa.savePrivateKeyLocally(keyPair.privateKey, user.uid, () => {
+      firebase.database().ref(`/users/${user.uid}/basic_info`).set({
+        name,
+        email: user.email,
+        publicKey
+      }).then(() => {
+        firebase.auth().signInWithEmailAndPassword(user.email, password)
+          .then(userLogin => {
+            loginUserSuccess(dispatch, userLogin);
+          }).catch(() => loginUserFail(dispatch));
+      });
+    });
   });
 };

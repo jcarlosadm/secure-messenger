@@ -14,7 +14,8 @@ const INITIAL_STATE = {
   password: '',
   user: null,
   error: '',
-  loading: false
+  loading: false,
+  publicKey: null
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -33,7 +34,8 @@ export default (state = INITIAL_STATE, action) => {
         ...INITIAL_STATE,
         name: action.payload.name,
         email: action.payload.email,
-        user: action.payload.user
+        user: action.payload.user,
+        publicKey: action.payload.publicKey
       };
     case LOGIN_USER_FAIL:
       return {

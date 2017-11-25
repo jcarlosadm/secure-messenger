@@ -16,7 +16,8 @@ class NewFriendForm extends React.Component {
   addFriend() {
     this.props.addFriend({
       user: this.props.user,
-      friendEmail: this.props.email
+      friendEmail: this.props.email,
+      publicKey: this.props.publicKey
     });
   }
 
@@ -62,9 +63,9 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   const { email, error, loading } = state.newFriend;
-  const { user } = state.auth;
+  const { user, publicKey } = state.auth;
 
-  return { email, error, loading, user };
+  return { email, error, loading, user, publicKey };
 };
 
 export default connect(mapStateToProps, {
