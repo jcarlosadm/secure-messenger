@@ -10,13 +10,14 @@ import {
   friendsReset
 } from '../actions';
 import { Card, CardSection, Input, Button, Spinner } from './common';
+import Logo from '../images/logo.png';
 
 class LoginForm extends React.Component {
   componentWillMount() {
     this.props.resetAttr();
     this.props.friendsReset();
   }
-  
+
   onButtonPress() {
     const { email, password } = this.props;
 
@@ -80,7 +81,7 @@ class LoginForm extends React.Component {
         <CardSection>
           {this.renderButton('Register', this.gotoRegister, false)}
         </CardSection>
-        <Image source={require('../images/logo.png')} style={styles.image} />
+        <Image source={Logo} style={styles.image} />
       </Card>
     );
   }

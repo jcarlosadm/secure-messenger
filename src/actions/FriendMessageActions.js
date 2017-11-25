@@ -40,9 +40,6 @@ export const chooseFriend = ({ name, friendId }) => {
           const { key, initVector } =
             cipher.jsonToKeys(keyJson, initVectorJson);
 
-          console.log(key);
-          console.log(initVectorJson);
-
           dispatch({
             type: SESSION_KEY_CHANGED,
             payload: { sessionKey: key, initVector }
