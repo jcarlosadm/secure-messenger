@@ -47,6 +47,14 @@ class RSAManager {
       callback(privateKey);
     });
   }
+
+  publicKeyToJson(publicKey) {
+    return JSON.stringify(forge.pki.publicKeyToAsn1(publicKey));
+  }
+
+  jsonToPublicKey(jsonData) {
+    return forge.pki.publicKeyFromAsn1(JSON.parse(jsonData));
+  }
 }
 
 export default RSAManager;

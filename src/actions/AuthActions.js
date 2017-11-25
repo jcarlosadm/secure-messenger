@@ -1,5 +1,6 @@
 import firebase from 'firebase';
 import { Actions } from 'react-native-router-flux';
+import RSAManager from '../RSAManager';
 import {
   NAME_CHANGED,
   EMAIL_CHANGED,
@@ -97,13 +98,21 @@ const loginUserSuccess = (dispatch, user) => {
 };
 
 const registerUserSuccess = (dispatch, user, name, password) => {
-  firebase.database().ref(`/users/${user.uid}/basic_info`).set({
-    name,
-    email: user.email
-  }).then(() => {
-    firebase.auth().signInWithEmailAndPassword(user.email, password)
-      .then(userLogin => {
-        loginUserSuccess(dispatch, userLogin);
-      }).catch(() => loginUserFail(dispatch));
+  const rsa = new RSAManager();
+  rsa.genKeys((keyPair) => {
+    const publicKey = rsa.publicKeyToJson(keyPair.publicKey);
+    console.log(publicKey);
+    rsa.savePrivateKeyLocally(keyPair.privateKey, user.uid, () => {
+      firebase.database().ref(`/users/${user.uid}/basic_info`).set({
+        name,
+        email: user.email,
+        publicKey
+      }).then(() => {
+        firebase.auth().signInWithEmailAndPassword(user.email, password)
+          .then(userLogin => {
+            loginUserSuccess(dispatch, userLogin);
+          }).catch(() => loginUserFail(dispatch));
+      });
+    });
   });
 };
