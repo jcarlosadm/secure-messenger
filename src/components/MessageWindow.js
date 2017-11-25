@@ -17,7 +17,9 @@ class MessageWindow extends React.Component {
 
     this.props.fetchMessages({
       uid: this.props.user.uid,
-      friendId: this.props.friendId
+      friendId: this.props.friendId,
+      sessionKey: this.props.sessionKey,
+      initVector: this.props.initVector
     });
 
     this.createDataSource(this.props);
@@ -31,7 +33,9 @@ class MessageWindow extends React.Component {
     this.props.sendMessage({
       uid: this.props.user.uid,
       friendId: this.props.friendId,
-      message: this.props.bubbleText
+      message: this.props.bubbleText,
+      sessionKey: this.props.sessionKey,
+      initVector: this.props.initVector
     });
   }
 
@@ -93,7 +97,14 @@ class MessageWindow extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  const { title, friendId, listMessages, bubbleText, loading } = state.message;
+  const { title,
+    friendId,
+    listMessages,
+    bubbleText,
+    loading,
+    sessionKey,
+    initVector
+  } = state.message;
   const { user } = state.auth;
 
   const messages = _.map(listMessages, (val, id) => {
@@ -101,7 +112,16 @@ const mapStateToProps = (state) => {
   });
   messages.reverse();
 
-  return { title, friendId, messages, bubbleText, user, loading };
+  return {
+    title,
+    friendId,
+    messages,
+    bubbleText,
+    user,
+    loading,
+    sessionKey,
+    initVector
+  };
 };
 
 export default connect(mapStateToProps, {

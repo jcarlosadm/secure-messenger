@@ -4,7 +4,8 @@ import {
   FETCH_MESSAGES_SUCCESS,
   BUBBLE_TEXT_CHANGED,
   SEND_MESSAGE_SUCCESS,
-  SENDING_MESSAGE
+  SENDING_MESSAGE,
+  SESSION_KEY_CHANGED
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -12,7 +13,9 @@ const INITIAL_STATE = {
   friendId: '',
   listMessages: {},
   bubbleText: '',
-  loading: false
+  loading: false,
+  sessionKey: null,
+  initVector: null
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -21,6 +24,12 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, title: action.payload };
     case FRIEND_ID_CHANGED:
       return { ...state, friendId: action.payload };
+    case SESSION_KEY_CHANGED:
+      return {
+        ...state,
+        sessionKey: action.payload.sessionKey,
+        initVector: action.payload.initVector
+      };
     case FETCH_MESSAGES_SUCCESS:
       return { ...state, listMessages: action.payload };
     case BUBBLE_TEXT_CHANGED:

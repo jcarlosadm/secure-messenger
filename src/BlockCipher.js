@@ -18,13 +18,14 @@ class BlockCipher {
     cipher.update(forge.util.createBuffer(forge.util.encodeUtf8(message)));
     cipher.finish();
 
-    return cipher.output;
+    return cipher.output.toHex();
   }
 
-  decrypt(message, key, initVector) {
+  decrypt(message_, key, initVector) {
+    const message = forge.util.hexToBytes(message_);
     const decipher = forge.cipher.createDecipher('AES-CBC', key);
     decipher.start({ iv: initVector });
-    decipher.update(message);
+    decipher.update(forge.util.createBuffer(message));
     decipher.finish();
 
     return forge.util.decodeUtf8(decipher.output);
