@@ -85,12 +85,16 @@ const loginUserFail = (dispatch) => {
 const loginUserSuccess = (dispatch, user) => {
   firebase.database().ref(`/users/${user.uid}/basic_info`).once('value')
     .then((snapshot) => {
+      const rsa = new RSAManager();
+
       const name = (snapshot.val() && snapshot.val().name) || null;
       const email = (snapshot.val() && snapshot.val().email) || null;
+      const publicKey = rsa.jsonToPublicKey((snapshot.val()
+                                  && snapshot.val().publicKey) || null);
 
       dispatch({
         type: LOGIN_USER_SUCCESS,
-        payload: { user, name, email }
+        payload: { user, name, email, publicKey }
       });
 
       Actions.friends({ type: 'reset' });

@@ -49,11 +49,11 @@ class RSAManager {
   }
 
   publicKeyToJson(publicKey) {
-    return JSON.stringify(forge.pki.publicKeyToAsn1(publicKey));
+    return (publicKey ? JSON.stringify(forge.pki.publicKeyToAsn1(publicKey)) : null);
   }
 
   jsonToPublicKey(jsonData) {
-    return forge.pki.publicKeyFromAsn1(JSON.parse(jsonData));
+    return (jsonData ? forge.pki.publicKeyFromAsn1(JSON.parse(jsonData)) : null);
   }
 }
 
