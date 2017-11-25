@@ -88,9 +88,10 @@ export const sendMessage = ({ uid, friendId, message, sessionKey, initVector }) 
   return (dispatch) => {
     if (message != null && message !== undefined && message.length > 0) {
       dispatch({ type: SENDING_MESSAGE });
+      const messageAscii = message.replace(/[^\x00-\x7F]/g, '_');
 
       const cipher = new BlockCipher();
-      const newMessage = cipher.encrypt(message, sessionKey, initVector);
+      const newMessage = cipher.encrypt(messageAscii, sessionKey, initVector);
 
       firebase.database().ref(`users/${uid}/friends/${friendId}/messages`)
       .push().set({
