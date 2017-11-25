@@ -16,3 +16,8 @@ export const ADD_FRIEND_SUCCESS = 'add_friend_success';
 export const ADD_FRIEND_FAIL = 'add_friend_fail';
 
 export const MESSAGE_TITLE_CHANGED = 'message_title_changed';
+export const FRIEND_ID_CHANGED = 'friend_id_changed';
+export const FETCH_MESSAGES_SUCCESS = 'fetch_messages_success';
+export const BUBBLE_TEXT_CHANGED = 'bubble_text_changed';
+export const SENDING_MESSAGE = 'sending_message';
+export const SEND_MESSAGE_SUCCESS = 'send_message_success';
