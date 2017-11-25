@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet } from 'react-native';
+import { Text, StyleSheet, Image } from 'react-native';
 import { connect } from 'react-redux';
 import { Actions } from 'react-native-router-flux';
 import {
@@ -80,6 +80,7 @@ class LoginForm extends React.Component {
         <CardSection>
           {this.renderButton('Register', this.gotoRegister, false)}
         </CardSection>
+        <Image source={require('../images/logo.png')} style={styles.image} />
       </Card>
     );
   }
@@ -97,6 +98,10 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingTop: 15,
     paddingBottom: 15
+  },
+
+  image: {
+      alignSelf: 'center'
   }
 });
 
