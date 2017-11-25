@@ -101,7 +101,6 @@ const registerUserSuccess = (dispatch, user, name, password) => {
   const rsa = new RSAManager();
   rsa.genKeys((keyPair) => {
     const publicKey = rsa.publicKeyToJson(keyPair.publicKey);
-    console.log(publicKey);
     rsa.savePrivateKeyLocally(keyPair.privateKey, user.uid, () => {
       firebase.database().ref(`/users/${user.uid}/basic_info`).set({
         name,
