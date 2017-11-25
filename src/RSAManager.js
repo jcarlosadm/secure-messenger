@@ -1,4 +1,5 @@
-const forge = require('node-forge');
+import { AsyncStorage } from 'react-native';
+import forge from 'node-forge';
 
 class RSAManager {
 
@@ -13,12 +14,38 @@ class RSAManager {
     });
   }
 
+  /*
+  * return: encrypted message
+  */
   encrypt(message, publicKey) {
     return publicKey.encrypt(forge.util.encodeUtf8(message));
   }
 
+  /*
+  * return: decrypted message
+  */
   decrypt(encrypted, privateKey) {
     return forge.util.decodeUtf8(privateKey.decrypt(encrypted));
+  }
+
+  /*
+  * callback: callback function without arguments
+  */
+  savePrivateKeyLocally(privateKey, uid, callback) {
+    AsyncStorage.setItem(uid,
+      JSON.stringify(forge.pki.privateKeyToAsn1(privateKey)), () => {
+        callback();
+      });
+  }
+
+  /*
+  * callback: callback function with one argument (privateKey)
+  */
+  getPrivateKeyLocally(uid, callback) {
+    AsyncStorage.getItem(uid, (err, value) => {
+      const privateKey = forge.pki.privateKeyFromAsn1(JSON.parse(value));
+      callback(privateKey);
+    });
   }
 }
 
